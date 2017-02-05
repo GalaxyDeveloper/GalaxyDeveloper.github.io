@@ -21,10 +21,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Plugin1Listener implements Listener {
-	private static final String ENCOUNTER1 = "I will capture a human!";
-	private static final String ENCOUNTER2 = "You've asked for it.";
-	private static final String KILL_MESSAGE = "Spare me, please!";
-	private static final String FOLLOWING1 = "Then, I will receive all the things I utterly deserve!";
+	private static final String SENCOUNTER1 = "I will capture a human!";
+	private static final String SENCOUNTER2 = "You've asked for it.";
+	private static final String SKILL_MESSAGE = "Spare me, please!";
+	private static final String SFOLLOWING1 = "Then, I will receive all the things I utterly deserve!";
+	private static final String ZENCOUNTER1 = "Brains!";
+	private static final String ZENCOUNTER2 = "Brains...";
+	private static final String ZKILL_MESSAGE = "Brains?";
+	private static final String ZFOLLOWING1 = "Brraaiinnnss!";
 
 	// Player Join Message
 	@EventHandler
@@ -46,9 +50,9 @@ public class Plugin1Listener implements Listener {
 				int r = rand.nextInt(2);
 				String message = null;
 				if (r == 0) {
-					message = ENCOUNTER1;
+					message = SENCOUNTER1;
 				} else {
-					message = ENCOUNTER2;
+					message = SENCOUNTER2;
 				}
 				entity.setCustomName(message);
 				entity.setCustomNameVisible(true);
@@ -57,8 +61,8 @@ public class Plugin1Listener implements Listener {
 
 					@Override
 					public void run() {
-						if (ENCOUNTER1.equals(entity.getCustomName())) {
-							entity.setCustomName(FOLLOWING1);
+						if (SENCOUNTER1.equals(entity.getCustomName())) {
+							entity.setCustomName(SFOLLOWING1);
 						} else {
 							entity.setCustomName(null);
 							entity.setCustomNameVisible(false);
@@ -81,10 +85,10 @@ public class Plugin1Listener implements Listener {
 
 	// Skeleton Last Words
 	@EventHandler
-	public void onMobKilled(EntityDeathEvent event) {
+	public void onMobKilledSkeleton(EntityDeathEvent event) {
 		final Entity e = event.getEntity();
 		if (e.getType() == EntityType.SKELETON) {
-			e.setCustomName(KILL_MESSAGE);
+			e.setCustomName(SKILL_MESSAGE);
 			e.setCustomNameVisible(true);
 		}
 	}
@@ -107,6 +111,50 @@ public class Plugin1Listener implements Listener {
 	///////////////////////
 	// Zombie - RPG Edits//
 	///////////////////////
+
+	// Skeleton Quotes
+	@EventHandler
+	public void zombieEncounterQuotes(EntityTargetLivingEntityEvent event) {
+		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
+			Entity entity = event.getEntity();
+			if (entity.getType() == EntityType.ZOMBIE) {
+				Random rand = new Random();
+				int r = rand.nextInt(2);
+				String message = null;
+				if (r == 0) {
+					message = ZENCOUNTER1;
+				} else {
+					message = ZENCOUNTER2;
+				}
+				entity.setCustomName(message);
+				entity.setCustomNameVisible(true);
+				Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(Plugin1.PLUGIN_NAME);
+				BukkitRunnable bukkitRunnable1 = new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						if (ZENCOUNTER1.equals(entity.getCustomName())) {
+							entity.setCustomName(ZFOLLOWING1);
+						} else {
+							entity.setCustomName(null);
+							entity.setCustomNameVisible(false);
+						}
+					}
+				};
+				bukkitRunnable1.runTaskLater(plugin, 140L);
+			}
+		}
+	}
+
+	// Zombie Last Words
+	@EventHandler
+	public void onMobKilledZombie(EntityDeathEvent event) {
+		final Entity e = event.getEntity();
+		if (e.getType() == EntityType.ZOMBIE) {
+			e.setCustomName(ZKILL_MESSAGE);
+			e.setCustomNameVisible(true);
+		}
+	}
 
 	// @EventHandler
 	// public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
