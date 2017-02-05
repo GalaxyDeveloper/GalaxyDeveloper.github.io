@@ -21,7 +21,6 @@ li a {
     text-decoration: none;
 }
 
-/* Change the link color to #111 (black) on hover */
 li a:hover {
     background-color: #111;
 }
@@ -31,9 +30,3 @@ li {
 
 li:last-child {
     border-right: none;
-}
-ul {
-    position: fixed;
-    top: 0;
-    width: 100%;
-}
