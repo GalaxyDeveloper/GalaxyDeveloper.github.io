@@ -21,6 +21,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Plugin1Listener implements Listener {
+	// Dialog
 	private static final String SENCOUNTER1 = "I will capture a human!";
 	private static final String SENCOUNTER2 = "You've asked for it.";
 	private static final String SKILL_MESSAGE = "Spare me, please!";
@@ -46,6 +47,7 @@ public class Plugin1Listener implements Listener {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.SKELETON) {
+				Bukkit.broadcastMessage(ChatColor.RED + "You feel like your going to have a bad time...");
 				Random rand = new Random();
 				int r = rand.nextInt(2);
 				String message = null;
@@ -112,12 +114,13 @@ public class Plugin1Listener implements Listener {
 	// Zombie - RPG Edits//
 	///////////////////////
 
-	// Skeleton Quotes
+	// Zombie Quotes
 	@EventHandler
 	public void zombieEncounterQuotes(EntityTargetLivingEntityEvent event) {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.ZOMBIE) {
+				Bukkit.broadcastMessage(ChatColor.RED + "You hear some sort of groaning sound...");
 				Random rand = new Random();
 				int r = rand.nextInt(2);
 				String message = null;
