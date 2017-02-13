@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,9 +23,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Plugin1Listener implements Listener {
 	// Dialog
-	private static final String MYSTERY1 = "\"You wake up, your memories fade a little...\"";
-	private static final String MYSTERY2 = "\"You feel lightheaded, your memories fade a little...\"";
-	private static final String MYSTERY3 = "\"You feel as if you were wounded, you remember less then before...\"";
 	private static final String SENCOUNTER1 = "I will capture a human!";
 	private static final String SENCOUNTER2 = "You've asked for it.";
 	private static final String SENCOUNTER3 = "Stop, human!";
@@ -39,20 +38,20 @@ public class Plugin1Listener implements Listener {
 	private static final String SPKILL_MESSAGE = "You slippery human! Sssss...";
 	private static final String SPFOLLOWING1 = "Sssss...";
 
-	// Player Death Quotes
 	@EventHandler
-	public void playerDeathQuotes(PlayerDeathEvent event) {
-		Random rand = new Random();
-		int r = rand.nextInt(100);
-		String message = null;
-		if (r <= 10) {
-			Bukkit.broadcastMessage(message = MYSTERY1);
-		} else if (r >= 85) {
-			Bukkit.broadcastMessage(message = MYSTERY2);
-		} else if (r >= 43 && r <= 56) {
-			Bukkit.broadcastMessage(message = MYSTERY3);
-		} else {
-			message = null;
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if (event.getDamager() != null && event.getDamager().getType() == EntityType.PLAYER
+				&& event.getEntity() instanceof Monster) {
+			Player player = (Player) event.getDamager();
+			Monster mob = (Monster) event.getEntity();
+			if (mob.getHealth() - event.getDamage() <= 0) {
+				Random rand = new Random();
+				int r = rand.nextInt(10);
+				if (r <= 4) {
+					player.setMaxHealth(player.getMaxHealth() + 2);
+					Bukkit.broadcastMessage("You absorbed the monster's soul...");
+				}
+			}
 		}
 
 	}
@@ -231,20 +230,4 @@ public class Plugin1Listener implements Listener {
 			e.setCustomNameVisible(true);
 		}
 	}
-
-	// @EventHandler
-	// public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-	// if (event.getEntity().getType() == EntityType.PLAYER) {
-	// Player attacked = (Player) event.getEntity();
-	// if (attacked.getHealth() - event.getDamage() <= 0) {
-	// Entity damager = event.getDamager();
-	// Bukkit.broadcastMessage("damanged killed");
-	// if (damager != null) {
-	// damager.setCustomName("dam");
-	// damager.setCustomNameVisible(false);
-	// Bukkit.broadcastMessage("not null");
-	// }
-	// }
-	// }
-	// }
 }
