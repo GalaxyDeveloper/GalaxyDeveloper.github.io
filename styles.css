@@ -30,3 +30,8 @@ li {
 
 li:last-child {
     border-right: none;
+}
+
+a {
+    color: black;
+}
