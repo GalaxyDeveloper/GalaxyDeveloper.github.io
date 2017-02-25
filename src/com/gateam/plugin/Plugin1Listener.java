@@ -46,10 +46,10 @@ public class Plugin1Listener implements Listener {
 			Monster mob = (Monster) event.getEntity();
 			if (mob.getHealth() - event.getDamage() <= 0) {
 				Random rand = new Random();
-				int r = rand.nextInt(10);
-				if (r <= 4) {
+				int r = rand.nextInt(100);
+				if (r <= 5) {
 					player.setMaxHealth(player.getMaxHealth() + 2);
-					Bukkit.broadcastMessage("You absorbed the monster's soul...");
+					player.sendRawMessage(ChatColor.GREEN + "You absorbed the monster soul...");
 				}
 			}
 		}
@@ -66,7 +66,8 @@ public class Plugin1Listener implements Listener {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.SKELETON) {
-				Bukkit.broadcastMessage(ChatColor.RED + "You feel like your going to have a bad time...");
+				((Player) event.getTarget())
+						.sendRawMessage(ChatColor.RED + "You feel like your going to have a bad time...");
 				Random rand = new Random();
 				int r = rand.nextInt(3);
 				String message = null;
@@ -143,7 +144,7 @@ public class Plugin1Listener implements Listener {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.ZOMBIE) {
-				Bukkit.broadcastMessage(ChatColor.RED + "You hear some sort of groaning sound...");
+				((Player) event.getTarget()).sendRawMessage(ChatColor.RED + "You hear some sort of groaning sound...");
 				Random rand = new Random();
 				int r = rand.nextInt(2);
 				String message = null;
@@ -182,6 +183,25 @@ public class Plugin1Listener implements Listener {
 		}
 	}
 
+	// Zombie Drops
+	// @EventHandler
+	// public void onEntityDeath(EntityDeathEvent event) {
+	// Random rand = new Random();
+	// int r = rand.nextInt(100);
+	// String message = null;
+	// if (r <= 99) {
+	// int amount = 1;
+	// EntityType ent = event.getEntityType();
+	// byte typeID = (byte) EntityType.ZOMBIE.ordinal();
+	// ItemStack stack = new ItemStack(Material.PAPER, amount, (byte) 6);
+	// Entity entity = event.getEntity();
+	// event.getDrops().clear();
+	// event.getDrops().add(stack);
+	// event.getEntity().getWorld().dropItemNaturally(entity.getLocation(),
+	// stack);
+	// }
+	// }
+
 	///////////////////////
 	// Spider - RPG Edits//
 	///////////////////////
@@ -192,7 +212,8 @@ public class Plugin1Listener implements Listener {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.SPIDER) {
-				Bukkit.broadcastMessage(ChatColor.RED + "You hear something hissing, it's getting louder...");
+				((Player) event.getTarget())
+						.sendRawMessage(ChatColor.RED + "You hear something hissing, it's getting louder...");
 				Random rand = new Random();
 				int r = rand.nextInt(2);
 				String message = null;
