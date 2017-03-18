@@ -2,6 +2,7 @@ package com.gateam.plugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Bat;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,6 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Plugin1 extends JavaPlugin {
 
 	public static String PLUGIN_NAME = "Minequest Addon";
+	public static String DARWIN_METADATA_ID = "DARWIN";
+	public static String DARWIN_METADATA_VALUE = "TRUE";
+	private boolean darwinSpawned = false;
+	private Bat darwinBat;
 
 	// Minequest Plugin
 	@Override
@@ -57,4 +62,23 @@ public class Plugin1 extends JavaPlugin {
 	@Override
 	public void onDisable() {
 	}
+	
+	public boolean isDarwinSpawned() {
+		return this.darwinSpawned;
+	}
+	
+	public void setDarwinSpawned(boolean spawned) {
+		this.darwinSpawned = spawned; 
+	}
+
+	public Bat getDarwinBat() {
+		return darwinBat;
+	}
+
+	public void setDarwinBat(Bat darwinBat) {
+		this.darwinBat = darwinBat;
+	}
+	
+	
+	
 }

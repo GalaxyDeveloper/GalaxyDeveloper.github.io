@@ -1,11 +1,20 @@
 package com.gateam.plugin;
 
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
@@ -18,17 +27,32 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Plugin1Listener implements Listener {
 	// Dialog
-	private static final String SENCOUNTER1 = "I will capture a human!";
-	private static final String SENCOUNTER2 = "You've asked for it.";
+	private static final String SENCOUNTER1 = "Hey, human!";
+	private static final String SENCOUNTER2 = "My leader requests that you be captured!.";
 	private static final String SENCOUNTER3 = "Stop, human!";
+	private static final String SENCOUNTER4 = "I will capture you!";
 	private static final String SKILL_MESSAGE = "Spare me, please!";
-	private static final String SFOLLOWING1 = "Then, I will receive all the things I utterly deserve!";
+	private static final String SKILL_MESSAGE2 = "Alas, poor me!";
+	private static final String SFOLLOWING1 = "Get over here so I can capture you!";
 	private static final String SFOLLOWING2 = "I was sent to kill you!";
+	private static final String DARWIN1 = "I, THE AMAZING DARWIN, WILL CAPTURE A HUMAN!";
+	private static final String DARWIN2 = "THEN, I WILL RECEIVE EVERYTHING I UTTERLY DESERVE!";
+	private static final String DARWIN3 = "HEY, STAND STILL WHILE IM TALKING TO YOU!";
+	private static final String DARWIN4 = "ANYWAYS, I WILL CAPTURE YOU NOW!";
+	private static final String DARWINKILL = "ALAS, POOR DARWIN!";
+	private static final String DARWINSPARE = "I, THE AMAZING DARWIN, WILL SPARE YOU!";
 	private static final String ZENCOUNTER1 = "Brains!";
 	private static final String ZENCOUNTER2 = "Brains...";
 	private static final String ZKILL_MESSAGE = "Brains?";
@@ -48,56 +72,100 @@ public class Plugin1Listener implements Listener {
 				Random rand = new Random();
 				int r = rand.nextInt(100);
 				if (r <= 5) {
-					player.setMaxHealth(player.getMaxHealth() + 2);
+					player.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+							.setBaseValue(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 2);
+					// player.setMaxHealth(player.getMaxHealth() + 2);
 					player.sendRawMessage(ChatColor.GREEN + "You absorbed the monster soul...");
 				}
 			}
-		}
-
+		} 
 	}
+	
+	
 
 	/////////////////////////
 	// Skeleton - RPG Edits//
 	/////////////////////////
-
 	// Skeleton Quotes
 	@EventHandler
 	public void skeletonEncounterQuotes(EntityTargetLivingEntityEvent event) {
 		if (event.getReason() == TargetReason.CLOSEST_PLAYER) {
 			Entity entity = event.getEntity();
 			if (entity.getType() == EntityType.SKELETON) {
-				((Player) event.getTarget())
-						.sendRawMessage(ChatColor.RED + "You feel like your going to have a bad time...");
-				Random rand = new Random();
-				int r = rand.nextInt(3);
-				String message = null;
-				if (r == 0) {
-					message = SENCOUNTER1;
-				} else if (r == 2) {
-					message = SENCOUNTER3;
-				} else {
-					message = SENCOUNTER2;
-				}
-				entity.setCustomName(message);
-				entity.setCustomNameVisible(true);
 				Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(Plugin1.PLUGIN_NAME);
-				BukkitRunnable bukkitRunnable1 = new BukkitRunnable() {
+				BukkitRunnable bukkitRunnable1 = null;
+				List<MetadataValue> metadata = entity.getMetadata(Plugin1.DARWIN_METADATA_ID);
+				// Darwin's Boss Battle
+				if (metadata != null && !metadata.isEmpty() && Plugin1.DARWIN_METADATA_VALUE.equals(metadata.get(0).asString())) {
+					((Player) event.getTarget()).sendRawMessage(ChatColor.RED + "Metalic stomping echos around you...");
+					entity.setCustomName(DARWIN1);
+					entity.setCustomNameVisible(true);
+					bukkitRunnable1 = new BukkitRunnable() {
 
-					@Override
-					public void run() {
-						if (SENCOUNTER1.equals(entity.getCustomName())) {
-							entity.setCustomName(SFOLLOWING1);
-						} else if (SENCOUNTER3.equals(entity.getCustomName())) {
-							entity.setCustomName(SFOLLOWING2);
-						} else {
-							entity.setCustomName(null);
-							entity.setCustomNameVisible(false);
+						@Override
+						public void run() {
+							if(DARWIN1.equals(entity.getCustomName())) {
+								entity.setCustomName(DARWIN2);
+							} else if (DARWIN2.equals(entity.getCustomName())) {
+								entity.setCustomName(DARWIN3);
+							} else if (DARWIN3.equals(entity.getCustomName())) {
+								entity.setCustomName(DARWIN4);
+							} else {
+								entity.setCustomName(null);
+								entity.setCustomNameVisible(false);
+								this.cancel();
+							}
 						}
+					};
+					bukkitRunnable1.runTaskTimer(plugin, 140L, 100L);
+				} else {
+					((Player) event.getTarget()).sendRawMessage(ChatColor.RED + "You feel like your going to have a bad time...");
+					Random rand = new Random();
+					int r = rand.nextInt(4);
+					String message = null;
+					if (r == 0) {
+						message = SENCOUNTER1;
+					} else if (r == 2) {
+						message = SENCOUNTER3;
+					} else if (r == 3) {
+						message = SENCOUNTER4;
+					} else {
+						message = SENCOUNTER2;
 					}
-				};
-				bukkitRunnable1.runTaskLater(plugin, 140L);
+					entity.setCustomName(message);
+					entity.setCustomNameVisible(true);
+					bukkitRunnable1 = new BukkitRunnable() {
+
+						@Override
+						public void run() {
+							if (SENCOUNTER1.equals(entity.getCustomName())) {
+								entity.setCustomName(SFOLLOWING1);
+							} else if (SENCOUNTER3.equals(entity.getCustomName())) {
+								entity.setCustomName(SFOLLOWING2);
+							} else if (SENCOUNTER4.equals(entity.getCustomName())) {
+								entity.setCustomName(SFOLLOWING1);
+							} else {
+								entity.setCustomName(null);
+								entity.setCustomNameVisible(false);
+							}
+						}
+					};
+					bukkitRunnable1.runTaskLater(plugin, 140L);
+				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean isDarwin(Entity entity) {
+		boolean result = false;
+		if (entity.getType() == EntityType.SKELETON) {
+			List<MetadataValue> metadata = entity.getMetadata(Plugin1.DARWIN_METADATA_ID);
+			if (metadata != null && !metadata.isEmpty() && Plugin1.DARWIN_METADATA_VALUE.equals(metadata.get(0).asString())) {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	// Skeleton Setup
@@ -106,6 +174,49 @@ public class Plugin1Listener implements Listener {
 		if (event.getEntityType() == EntityType.SKELETON) {
 			Skeleton s = (Skeleton) event.getEntity();
 			s.getEquipment().setItemInMainHand(null);
+
+			Plugin1 plugin = ((Plugin1) Bukkit.getServer().getPluginManager().getPlugin(Plugin1.PLUGIN_NAME));
+			if (!plugin.isDarwinSpawned()) {
+				Random rand = new Random();
+				int r = rand.nextInt(10);
+				if (r <= 5) {
+					s.setMetadata(Plugin1.DARWIN_METADATA_ID,
+							new FixedMetadataValue(plugin, Plugin1.DARWIN_METADATA_VALUE));
+					s.getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
+					s.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+					s.getEquipment().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+					ItemStack bootItemStack = new ItemStack(Material.LEATHER_BOOTS);
+					LeatherArmorMeta meta = (LeatherArmorMeta) bootItemStack.getItemMeta();
+					meta.setColor(Color.BLACK);
+					bootItemStack.setItemMeta(meta);
+					s.getEquipment().setBoots(bootItemStack);
+					s.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(s.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 40);
+					// s.getMetadata(Plugin1.DARWIN_METADATA_ID).get(0).asString();
+					plugin.setDarwinSpawned(true);
+					
+					World world = s.getWorld();
+					Bat bat = (Bat)world.spawnEntity(s.getLocation(), EntityType.BAT);
+					ArmorStand stand = (ArmorStand)world.spawnEntity(s.getEyeLocation(), EntityType.ARMOR_STAND);
+					stand.setArms(true);
+					stand.setItemInHand(new ItemStack(Material.BONE));
+					bat.addPassenger(stand);
+					stand.setVisible(false);
+					bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+					plugin.setDarwinBat(bat);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
+		Plugin1 plugin = ((Plugin1) Bukkit.getServer().getPluginManager().getPlugin(Plugin1.PLUGIN_NAME));
+		if (plugin.getDarwinBat() != null) {
+			Bat bat = plugin.getDarwinBat();
+			bat.teleport(new Location(p.getWorld(), bat.getLocation().getX(), bat
+					.getLocation().getY(), bat.getLocation().getZ(), p
+					.getEyeLocation().getPitch(), p.getEyeLocation().getYaw()));
 		}
 	}
 
@@ -114,8 +225,33 @@ public class Plugin1Listener implements Listener {
 	public void onMobKilledSkeleton(EntityDeathEvent event) {
 		final Entity e = event.getEntity();
 		if (e.getType() == EntityType.SKELETON) {
-			e.setCustomName(SKILL_MESSAGE);
-			e.setCustomNameVisible(true);
+			List<MetadataValue> metadata = e.getMetadata(Plugin1.DARWIN_METADATA_ID);
+			if (metadata != null && !metadata.isEmpty() && Plugin1.DARWIN_METADATA_VALUE.equals(metadata.get(0).asString())) {
+				e.setCustomName(DARWINKILL);
+			} else {
+				Random rand = new Random();
+				int r = rand.nextInt(4);
+				if (r == 0) {
+					e.setCustomName(SKILL_MESSAGE);
+				} else if (r == 2) {
+					e.setCustomName(SKILL_MESSAGE2);
+					e.setCustomNameVisible(true);
+				}
+			}
+		}
+	}
+	
+	//Darwin - Mercy
+	@EventHandler
+	 void darwinMercy(EntityDamageByEntityEvent event) {
+		Entity e = event.getEntity();
+		if (e.getType() == EntityType.SKELETON) {
+			List<MetadataValue> metadata = e.getMetadata(Plugin1.DARWIN_METADATA_ID);
+			if (metadata != null && !metadata.isEmpty() && Plugin1.DARWIN_METADATA_VALUE.equals(metadata.get(0).asString())) {
+				if (((LivingEntity) e).getHealth() < 10) {
+					e.setCustomName(DARWINSPARE);
+				}
+			}
 		}
 	}
 
