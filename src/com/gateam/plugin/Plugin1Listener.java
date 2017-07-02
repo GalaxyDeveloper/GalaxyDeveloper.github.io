@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -49,8 +50,8 @@ public class Plugin1Listener implements Listener {
 	private static final String SFOLLOWING2 = "I was sent to kill you!";
 	private static final String DARWIN1 = "I, THE AMAZING DARWIN, WILL CAPTURE A HUMAN!";
 	private static final String DARWIN2 = "THEN, I WILL RECEIVE EVERYTHING I UTTERLY DESERVE!";
-	private static final String DARWIN3 = "HEY, STAND STILL WHILE IM TALKING TO YOU!";
-	private static final String DARWIN4 = "ANYWAYS, I WILL CAPTURE YOU NOW!";
+	private static final String DARWIN3 = "I WILL BE POPULAR, FAMOUS...";
+	private static final String DARWIN4 = "THAT'S DARWIN, THE NEWEST MEMBER OF THE GUARDSMEN.";
 	private static final String DARWINKILL = "ALAS, POOR DARWIN!";
 	private static final String DARWINSPARE = "I, THE AMAZING DARWIN, WILL SPARE YOU!";
 	private static final String ZENCOUNTER1 = "Brains!";
@@ -193,7 +194,7 @@ public class Plugin1Listener implements Listener {
 					s.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(s.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + 40);
 					// s.getMetadata(Plugin1.DARWIN_METADATA_ID).get(0).asString();
 					plugin.setDarwinSpawned(true);
-					
+					plugin.setDarwin(s);
 					World world = s.getWorld();
 					Bat bat = (Bat)world.spawnEntity(s.getLocation(), EntityType.BAT);
 					ArmorStand stand = (ArmorStand)world.spawnEntity(s.getEyeLocation(), EntityType.ARMOR_STAND);
@@ -269,6 +270,15 @@ public class Plugin1Listener implements Listener {
 			e.setDeathMessage(ChatColor.WHITE + killed + " has been slain by " + attacker.getType());
 		}
 	}
+	//Darwin Chat 
+	@EventHandler
+	public void onPlayerChatWithDarwin(PlayerChatEvent event) {
+		Plugin1 plugin = (Plugin1)Bukkit.getServer().getPluginManager().getPlugin(Plugin1.PLUGIN_NAME);
+		if (plugin.isDarwinSpawned() && event.getPlayer().equals(plugin.getDarwin().getTarget())) {
+			Bukkit.broadcastMessage("darwin spawnd " + plugin.getDarwin().getTarget().getName());
+		}
+	}
+		
 
 	///////////////////////
 	// Zombie - RPG Edits//

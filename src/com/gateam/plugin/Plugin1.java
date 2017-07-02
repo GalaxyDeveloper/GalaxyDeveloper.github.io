@@ -3,6 +3,7 @@ package com.gateam.plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Bat;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,6 +16,7 @@ public class Plugin1 extends JavaPlugin {
 	public static String DARWIN_METADATA_VALUE = "TRUE";
 	private boolean darwinSpawned = false;
 	private Bat darwinBat;
+	private Skeleton darwin;
 
 	// Minequest Plugin
 	@Override
@@ -77,6 +79,14 @@ public class Plugin1 extends JavaPlugin {
 
 	public void setDarwinBat(Bat darwinBat) {
 		this.darwinBat = darwinBat;
+	}
+
+	public Skeleton getDarwin() {
+		return darwin;
+	}
+
+	public void setDarwin(Skeleton darwin) {
+		this.darwin = darwin;
 	}
 	
 	
