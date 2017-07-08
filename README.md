@@ -1,1 +1,1 @@
-# Minequest
+# GameStudio Games
