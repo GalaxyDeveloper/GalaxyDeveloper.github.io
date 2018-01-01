@@ -1,6 +1,8 @@
 #main {
       text-align: center;
       font-family: "Lucida Console", monospace;
+      color: white;
+      background-color: black;
 }
 
 ul {
