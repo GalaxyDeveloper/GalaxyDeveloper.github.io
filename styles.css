@@ -1,6 +1,9 @@
 #main {
       text-align: center;
       font-family: "Lucida Console", monospace;
+}
+
+body {
       color: white;
       background-color: black;
 }
