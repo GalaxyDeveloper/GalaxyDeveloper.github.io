@@ -3,7 +3,7 @@
       font-family: "Lucida Console", monospace;
 }
 
-h1, h2, p, a {
+h1, h3, p, a {
       color: white; 
       background-color: black;
 }
